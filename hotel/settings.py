@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['hotel-mong.onrender.com', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'hotel.apps.MongoAdminConfig',           # Reemplaza 'django.contrib.admin'
     'hotel.apps.MongoAuthConfig',            # Reemplaza 'django.contrib.auth'
     'hotel.apps.MongoContentTypesConfig',    # Reemplaza 'django.contrib.contenttypes'
@@ -43,12 +44,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'TipoHabitacion',
+    'whitenoise',
 ]
 
 DEFAULT_AUTO_FIELD = "django_mongodb_backend.fields.ObjectIdAutoField"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,6 +132,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # agregamos la carpeta de static
 STATICFILES_DIRS = [STATIC_DIR]
 
