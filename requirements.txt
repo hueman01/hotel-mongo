@@ -1,0 +1,6 @@
+django
+django-mongodb-backend==6.1.0
+pillow
+openpyxl
+reportlab
+matplotlib

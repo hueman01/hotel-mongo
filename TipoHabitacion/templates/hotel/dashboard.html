@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="dashboard-hero card">
+    <div>
+        <p class="eyebrow">Dashboard</p>
+        <h2>Panel operativo</h2>
+        <p>Resumen informativo del Hotel H.H.</p>
+    </div>
+    <div class="actions">
+        <a class="btn secondary" href="{% url 'listar' 'reservas' %}">Ver reservas</a>
+        {% if user.is_superuser %}
+            <a class="btn" href="{% url 'listar' 'clientes' %}">Ver clientes</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="metric-grid">
+    {% for metrica in metricas %}
+        {% if metrica.href %}
+            <a class="metric-card metric-card--button" href="{{ metrica.href }}" aria-label="Ver {{ metrica.label }}">
+                <span>{{ metrica.label }}</span>
+                <strong>{{ metrica.value }}</strong>
+            </a>
+        {% else %}
+            <article class="metric-card">
+                <span>{{ metrica.label }}</span>
+                <strong>{{ metrica.value }}</strong>
+            </article>
+        {% endif %}
+    {% endfor %}
+</section>
+
+<section class="dashboard-grid">
+    <article class="card chart-card">
+        <h3>Reservas por estado</h3>
+        {% if chart_base64 %}
+            <div class="chart-frame">
+                <img src="data:image/png;base64,{{ chart_base64 }}" alt="Grafico de reservas por estado">
+            </div>
+        {% else %}
+            <p class="empty-state">Todavia no hay reservas para graficar.</p>
+        {% endif %}
+    </article>
+
+    <article class="card dashboard-summary">
+        <h3>Datos disponibles</h3>
+        <div class="dashboard-indicators">
+            {% for dato in resumen_circular %}
+                {% if dato.href %}
+                    <a
+                        class="dashboard-indicator dashboard-indicator--button"
+                        href="{{ dato.href }}"
+                        style="--indicator-color: {{ dato.color }}; --indicator-bg: {{ dato.soft_color }};"
+                        aria-label="Ver {{ dato.label }}"
+                    >
+                        <div class="dashboard-indicator__ring" style="--progress: {{ dato.progress }}%;">
+                            <strong class="dashboard-indicator__value">{{ dato.value }}</strong>
+                        </div>
+                        <span class="dashboard-indicator__label">{{ dato.label }}</span>
+                        <span class="dashboard-indicator__detail">{{ dato.detail }}</span>
+                        <span class="dashboard-indicator__range">Min {{ dato.min }} / Max {{ dato.max }}</span>
+                    </a>
+                {% else %}
+                    <article
+                        class="dashboard-indicator"
+                        style="--indicator-color: {{ dato.color }}; --indicator-bg: {{ dato.soft_color }};"
+                        role="meter"
+                        aria-label="{{ dato.label }}"
+                        aria-valuemin="{{ dato.min }}"
+                        aria-valuemax="{{ dato.aria_max }}"
+                        aria-valuenow="{{ dato.current }}"
+                        aria-valuetext="{{ dato.detail }}"
+                    >
+                        <div class="dashboard-indicator__ring" style="--progress: {{ dato.progress }}%;">
+                            <strong class="dashboard-indicator__value">{{ dato.value }}</strong>
+                        </div>
+                        <span class="dashboard-indicator__label">{{ dato.label }}</span>
+                        <span class="dashboard-indicator__detail">{{ dato.detail }}</span>
+                        <span class="dashboard-indicator__range">Min {{ dato.min }} / Max {{ dato.max }}</span>
+                    </article>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </article>
+</section>
+
+{% if mostrar_datos_admin %}
+    <section class="dashboard-grid dashboard-grid--bottom">
+        <article class="card">
+            <h3>Ultimas reservas</h3>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Habitacion</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reserva in ultimas_reservas %}
+                            <tr>
+                                <td>{{ reserva.cliente }}</td>
+                                <td>{{ reserva.habitacion }}</td>
+                                <td>{{ reserva.estado }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="3">Sin reservas registradas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="card">
+            <h3>Ultimos clientes</h3>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>RUT</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cliente in ultimos_clientes %}
+                            <tr>
+                                <td>{{ cliente.nombre }}</td>
+                                <td>{{ cliente.rut }}</td>
+                                <td>{{ cliente.email }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="3">Sin clientes registrados.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+{% endif %}
+
+<section class="dashboard-grid dashboard-grid--bottom">
+    <article class="card">
+        <h3>Ultimos tipos de habitacion</h3>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Capacidad</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tipo in ultimos_tipos %}
+                        <tr>
+                            <td>{{ tipo.nombre }}</td>
+                            <td>{{ tipo.capacidad }}</td>
+                            <td>${{ tipo.precio_noche }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3">Sin tipos de habitacion registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="card">
+        <h3>Ultimas habitaciones</h3>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Numero</th>
+                        <th>Estado</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for habitacion in ultimas_habitaciones %}
+                        <tr>
+                            <td>{{ habitacion.numero }}</td>
+                            <td>{{ habitacion.estado }}</td>
+                            <td>{{ habitacion.tipo }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3">Sin habitaciones registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endblock %}

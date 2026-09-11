@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Ingresar | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="auth-shell auth-shell--login">
+    <div class="auth-stage">
+        <aside class="auth-copy">
+            <div class="auth-brand-mark">
+                <span>Hotel H.H.</span>
+                <small>Gestión Hotelera Mas Grande y Completa </small>
+            </div>
+            <h1>Acceso seguro para administrar el hotel</h1>
+            <p>
+                Inicia sesión para gestionar reservas, habitaciones, clientes y servicios desde una
+                experiencia más limpia, ordenada y adaptable a cualquier pantalla.
+            </p>
+    
+        </aside>
+
+        <article class="card auth-card auth-card--login">
+            <div class="auth-card__header">
+                <p class="eyebrow">Acceso WiFi</p>
+                <h2>Ingresar</h2>
+                <p class="auth-card__copy">Usa tu usuario y contraseña para entrar al sistema.</p>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="form-errors form-errors--compact" role="alert" aria-live="polite">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="post" class="form auth-form">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="{{ form.username.id_for_label }}">Usuario</label>
+                    {{ form.username }}
+                    {% for error in form.username.errors %}
+                        <small class="field-error">{{ error }}</small>
+                    {% endfor %}
+                </div>
+
+                <div class="field">
+                    <label for="{{ form.password.id_for_label }}">Contraseña</label>
+                    {{ form.password }}
+                    {% for error in form.password.errors %}
+                        <small class="field-error">{{ error }}</small>
+                    {% endfor %}
+                </div>
+
+                <div class="auth-actions auth-actions--login">
+                    <button class="btn" type="submit">Entrar</button>
+                    <a class="btn secondary" href="{% url 'register' %}">Crear cuenta</a>
+                    <a class="btn ghost" href="{% url 'inicio' %}">Volver al inicio</a>
+                </div>
+            </form>
+        </article>
+    </div>
+</section>
+{% endblock %}

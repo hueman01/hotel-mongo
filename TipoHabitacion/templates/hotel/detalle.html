@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Detalle | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="card">
+    <p class="eyebrow">Detalle</p>
+    <h2>Detalle de {{ config.singular }}</h2>
+    <dl class="detail-list">
+        {% for header, value in datos %}
+            <dt>{{ header }}</dt>
+            <dd>
+                {% if header == 'Foto' and objeto.foto %}
+                    <img class="preview" src="{{ objeto.foto.url }}" alt="{{ objeto.nombre }}">
+                {% elif header == 'Foto' and value.url %}
+                    <img class="preview" src="{{ value.url }}" alt="{{ objeto.tipo.nombre }}">
+                {% else %}
+                    {{ value }}
+                {% endif %}
+            </dd>
+        {% endfor %}
+    </dl>
+    <div class="actions">
+        {% if can_change %}
+            <a class="btn" href="{% url 'editar' modelo objeto.id %}">Editar</a>
+        {% endif %}
+        {% if can_delete %}
+            <a
+                class="btn danger"
+                href="{% url 'eliminar' modelo objeto.id %}"
+                data-confirm-delete="true"
+                data-confirm-title="Eliminar {{ objeto|escape }}"
+                data-confirm-text="Esta accion no se puede deshacer."
+            >Eliminar</a>
+        {% endif %}
+        <a class="btn secondary" href="{% url 'listar' modelo %}">Volver</a>
+    </div>
+</section>
+{% endblock %}

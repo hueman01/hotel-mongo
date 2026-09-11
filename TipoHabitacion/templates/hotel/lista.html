@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}{{ config.title }} | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Listado</p>
+        <h2>{{ config.title }}</h2>
+        <p>{{ total_resultados }} resultados encontrados. Mostrando {{ rango_resultados }}.</p>
+    </div>
+    <div class="actions">
+        {% if can_add %}
+            <a class="btn" href="{% url 'crear' modelo %}">Crear</a>
+        {% endif %}
+        <a class="btn secondary" href="{% url 'exportar_excel' modelo %}{% if query_string %}?{{ query_string }}{% endif %}">Excel</a>
+        <a class="btn secondary" href="{% url 'exportar_pdf' modelo %}{% if query_string %}?{{ query_string }}{% endif %}">PDF</a>
+    </div>
+</section>
+
+<section class="filters">
+    <form method="get" class="form form--inline">
+        {{ filter_form.as_p }}
+        <div class="actions">
+            <button class="btn" type="submit">Filtrar</button>
+            <a class="btn secondary" href="{% url 'listar' modelo %}">Limpiar</a>
+        </div>
+    </form>
+</section>
+
+<section class="table-wrap">
+    <table class="table">
+        <thead>
+            <tr>
+                {% for header in config.headers %}<th>{{ header }}</th>{% endfor %}
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in page_obj %}
+            <tr>
+                {% if modelo == 'tipos' %}
+                    <td>{{ obj.nombre }}</td><td>{{ obj.descripcion|truncatechars:60 }}</td><td>${{ obj.precio_noche }}</td><td>{{ obj.capacidad }}</td>
+                    <td>{% if obj.foto %}<img class="thumb" src="{{ obj.foto.url }}" alt="{{ obj.nombre }}">{% else %}Sin foto{% endif %}</td>
+                {% elif modelo == 'habitaciones' %}
+                    <td>{{ obj.numero }}</td><td>{{ obj.piso }}</td><td>{{ obj.estado }}</td><td>{{ obj.tipo }}</td>
+                {% elif modelo == 'clientes' %}
+                    <td>{{ obj.nombre }}</td><td>{{ obj.rut }}</td><td>{{ obj.email }}</td><td>{{ obj.telefono }}</td>
+                {% elif modelo == 'reservas' %}
+                    <td>{{ obj.cliente }}</td><td>{{ obj.habitacion }}</td><td>{{ obj.check_in }}</td><td>{{ obj.check_out }}</td><td>{{ obj.estado }}</td><td>${{ obj.total }}</td>
+                {% elif modelo == 'servicios' %}
+                    <td>{{ obj.nombre }}</td><td>${{ obj.precio }}</td><td>{{ obj.descripcion|truncatechars:60 }}</td><td>{{ obj.reservas.count }}</td>
+                {% endif %}
+                <td class="row-actions">
+                    <a class="btn btn--sm secondary" href="{% url 'detalle' modelo obj.id %}">Ver</a>
+                    {% if can_change %}
+                        <a class="btn btn--sm" href="{% url 'editar' modelo obj.id %}">Editar</a>
+                    {% endif %}
+                    {% if can_delete %}
+                        <a
+                            class="btn btn--sm danger"
+                            href="{% url 'eliminar' modelo obj.id %}"
+                            data-confirm-delete="true"
+                            data-confirm-title="Eliminar {{ obj|escape }}"
+                            data-confirm-text="Esta accion no se puede deshacer."
+                        >Eliminar</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="8">No hay registros con los filtros seleccionados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="{% if query_string %}?{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}">Anterior</a>
+    {% endif %}
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+        <a href="{% if query_string %}?{{ query_string }}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}">Siguiente</a>
+    {% endif %}
+</div>
+{% endblock %}

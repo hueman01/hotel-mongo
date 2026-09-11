@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Inicio | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="hero__copy">
+        <p class="eyebrow">Sistema de gestion hotelera</p>
+        <h1>Controla habitaciones, reservas y clientes desde un solo lugar.</h1>
+        <p>Accede al dashboard, revisa indicadores reales y administra cada modulo del hotel con filtros, reportes y exportacion de datos.</p>
+        <div class="actions">
+            {% if user.is_authenticated %}
+                <a class="btn" href="{% url 'dashboard' %}">Ir al dashboard</a>
+            {% else %}
+                <a class="btn" href="{% url 'login' %}">Ingresar</a>
+                <a class="btn secondary" href="{% url 'register' %}">Crear cuenta</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="hero__visual">
+        <img src="/media/hotel.jpg" alt="Hotel">
+    </div>
+</section>
+{% endblock %}

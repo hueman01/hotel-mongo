@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block body_class %}auth-page{% endblock %}
+{% block title %}Registro | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="auth-shell">
+    <article class="card auth-card">
+        <div class="auth-card__header">
+            <p class="eyebrow">Cuenta nueva</p>
+            <h2>Registro de usuario</h2>
+            <p class="auth-card__copy">Completa tus datos para crear tu acceso al sistema.</p>
+        </div>
+        {% if form.errors %}
+            <div class="form-errors" role="alert" aria-live="polite">
+                <strong>Revisa estos errores:</strong>
+                {% if form.non_field_errors %}
+                    {{ form.non_field_errors }}
+                {% endif %}
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <form method="post" class="form form--stacked">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="auth-actions">
+                <button class="btn" type="submit">Crear cuenta</button>
+                <a class="btn secondary" href="{% url 'login' %}">Ingresar</a>
+            </div>
+        </form>
+    </article>
+</section>
+{% endblock %}

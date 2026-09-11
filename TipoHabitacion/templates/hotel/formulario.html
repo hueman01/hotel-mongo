@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ accion }} {{ config.singular }} | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="card">
+    <p class="eyebrow">{{ accion }}</p>
+    <h2>{{ accion }} {{ config.singular }}</h2>
+    {% if form.errors %}
+        <div class="alert alert-error">
+            Revisa los errores del formulario antes de continuar.
+        </div>
+    {% endif %}
+    {% if modelo == 'reservas' %}
+        <p class="form-note">
+            El total se calcula automaticamente segun las noches reservadas y el precio por noche del tipo de habitacion.
+        </p>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data" class="form form--stacked">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="actions">
+            <button class="btn" type="submit">Guardar</button>
+            <a class="btn secondary" href="{% url 'listar' modelo %}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
