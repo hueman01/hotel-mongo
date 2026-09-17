@@ -1,13 +1,15 @@
 import base64
 from io import BytesIO
 
+from bson import ObjectId
+from bson.errors import InvalidId
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
@@ -86,6 +88,15 @@ MODEL_CONFIG = {
 
 def _get_config(modelo):
     return MODEL_CONFIG[modelo]
+
+
+def _get_object_or_404(modelo, pk):
+    """Convierte el pk (string) a ObjectId y busca el objeto, o lanza 404."""
+    try:
+        object_id = ObjectId(pk)
+    except (InvalidId, TypeError):
+        raise Http404('ID invalido')
+    return get_object_or_404(_select_queryset(modelo), pk=object_id)
 
 
 def _permission_name(model, action):
@@ -474,7 +485,7 @@ def listar(request, modelo):
 @never_cache
 def detalle(request, modelo, pk):
     config = _get_config(modelo)
-    objeto = get_object_or_404(_select_queryset(modelo), pk=pk)
+    objeto = _get_object_or_404(modelo, pk)
     if not _has_permission(request.user, config['model'], 'view'):
         return _deny(request, 'No tienes permiso para ver este registro.')
 
@@ -522,7 +533,7 @@ def editar(request, modelo, pk):
     if not _has_permission(request.user, config['model'], 'change'):
         return _deny(request, 'No tienes permiso para editar registros.')
 
-    objeto = get_object_or_404(config['model'], pk=pk)
+    objeto = _get_object_or_404(modelo, pk)
     form = config['form'](request.POST or None, request.FILES or None, instance=objeto)
     if request.method == 'POST' and form.is_valid():
         form.save()
@@ -546,7 +557,7 @@ def eliminar(request, modelo, pk):
     if not _has_permission(request.user, config['model'], 'delete'):
         return _deny(request, 'No tienes permiso para eliminar registros.')
 
-    objeto = get_object_or_404(config['model'], pk=pk)
+    objeto = _get_object_or_404(modelo, pk)
     mensaje_bloqueo = _cannot_delete(objeto, modelo)
     if mensaje_bloqueo:
         messages.error(request, mensaje_bloqueo)

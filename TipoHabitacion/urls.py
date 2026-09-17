@@ -9,9 +9,9 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('<str:modelo>/', views.listar, name='listar'),
     path('<str:modelo>/crear/', views.crear, name='crear'),
-    path('<str:modelo>/<int:pk>/', views.detalle, name='detalle'),
-    path('<str:modelo>/<int:pk>/editar/', views.editar, name='editar'),
-    path('<str:modelo>/<int:pk>/eliminar/', views.eliminar, name='eliminar'),
+    path('<str:modelo>/<str:pk>/', views.detalle, name='detalle'),
+    path('<str:modelo>/<str:pk>/editar/', views.editar, name='editar'),
+    path('<str:modelo>/<str:pk>/eliminar/', views.eliminar, name='eliminar'),
     path('<str:modelo>/exportar/excel/', views.exportar_excel, name='exportar_excel'),
     path('<str:modelo>/exportar/pdf/', views.exportar_pdf, name='exportar_pdf'),
 ]
