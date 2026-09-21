@@ -1000,29 +1000,46 @@ img { max-width: 100%; display: block; }
     background: rgba(255, 255, 255, 0.98);
 }
 
+/* ========================================
+   RESPONSIVE - TABLETS (≤ 980px)
+   ======================================== */
+
 @media (max-width: 980px) {
     .topbar__inner {
         grid-template-columns: 1fr;
-        justify-items: start;
+        justify-items: stretch;
+        gap: 12px;
+    }
+
+    .topbar__brand {
+        text-align: center;
+        width: 100%;
     }
 
     .topbar__nav {
+        flex-direction: column;
         justify-content: flex-start;
         width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .topbar__user {
-        text-align: left;
+        gap: 10px;
     }
 
     .topbar__nav-group {
+        flex-direction: column;
         width: 100%;
+        gap: 8px;
     }
 
     .topbar__link {
         width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+    }
+
+    .topbar__user {
+        text-align: center;
+        width: 100%;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
     }
 
     .hero,
@@ -1074,6 +1091,10 @@ img { max-width: 100%; display: block; }
     }
 }
 
+/* ========================================
+   RESPONSIVE - CELULARES (≤ 640px)
+   ======================================== */
+
 @media (max-width: 640px) {
     .container {
         width: min(100% - 20px, 1180px);
@@ -1113,15 +1134,12 @@ img { max-width: 100%; display: block; }
 
     .chart-frame img {
         height: auto;
+        max-height: 280px;
     }
 
     .dashboard-hero {
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .chart-frame img {
-        max-height: 280px;
     }
 
     .actions,
@@ -1206,6 +1224,10 @@ img { max-width: 100%; display: block; }
         padding: 26px 0 34px;
     }
 }
+
+/* ========================================
+   RESPONSIVE - CELULARES PEQUEÑOS (≤ 460px)
+   ======================================== */
 
 @media (max-width: 460px) {
     .card,
