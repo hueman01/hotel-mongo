@@ -15,7 +15,14 @@
                 <a href="{% url 'inicio' %}">Hotel H.H.</a>
                 <span>Gestión hotelera</span>
             </div>
-            <nav class="topbar__nav" aria-label="Navegación principal">
+
+            <button class="topbar__toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="topbar-menu">
+                <span class="topbar__toggle-bar"></span>
+                <span class="topbar__toggle-bar"></span>
+                <span class="topbar__toggle-bar"></span>
+            </button>
+
+            <nav class="topbar__nav" id="topbar-menu" aria-label="Navegación principal">
                 <a class="topbar__link" href="{% url 'inicio' %}">Inicio</a>
                 {% if user.is_authenticated %}
                     <div class="topbar__nav-group">
@@ -41,6 +48,7 @@
                     </div>
                 {% endif %}
             </nav>
+
             {% if user.is_authenticated %}
                 <div class="topbar__user">
                     <span>{{ user.username }}</span>
@@ -142,6 +150,32 @@
     {% endif %}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // === Menú hamburguesa ===
+            const toggle = document.querySelector('.topbar__toggle');
+            const menu = document.getElementById('topbar-menu');
+
+            if (toggle && menu) {
+                toggle.addEventListener('click', () => {
+                    const isOpen = menu.classList.toggle('is-open');
+                    toggle.classList.toggle('is-active', isOpen);
+                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+                });
+
+                // Cierra el menú al hacer click en un enlace (útil en móvil)
+                menu.querySelectorAll('a').forEach((link) => {
+                    link.addEventListener('click', () => {
+                        if (window.innerWidth <= 980) {
+                            menu.classList.remove('is-open');
+                            toggle.classList.remove('is-active');
+                            toggle.setAttribute('aria-expanded', 'false');
+                            toggle.setAttribute('aria-label', 'Abrir menú');
+                        }
+                    });
+                });
+            }
+
+            // === Confirmación de eliminación ===
             const getCookie = (name) => {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
