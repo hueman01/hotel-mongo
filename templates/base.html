@@ -17,46 +17,34 @@
             </div>
 
             <button class="topbar__toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="topbar-menu">
-                <span class="topbar__toggle-bar"></span>
-                <span class="topbar__toggle-bar"></span>
-                <span class="topbar__toggle-bar"></span>
+                <span></span><span></span><span></span>
             </button>
 
             <nav class="topbar__nav" id="topbar-menu" aria-label="Navegación principal">
                 <a class="topbar__link" href="{% url 'inicio' %}">Inicio</a>
                 {% if user.is_authenticated %}
-                    <div class="topbar__nav-group">
-                        <a class="topbar__link" href="{% url 'dashboard' %}">Dashboard</a>
-                        <a class="topbar__link" href="{% url 'listar' 'tipos' %}">Tipos</a>
-                        <a class="topbar__link" href="{% url 'listar' 'habitaciones' %}">Habitaciones</a>
-                        {% if user.is_superuser %}
-                            <a class="topbar__link" href="{% url 'listar' 'clientes' %}">Clientes</a>
-                        {% endif %}
-                        <a class="topbar__link" href="{% url 'listar' 'reservas' %}">Reservas</a>
-                        <a class="topbar__link" href="{% url 'listar' 'servicios' %}">Servicios</a>
-                    </div>
-                    <div class="topbar__nav-group topbar__nav-group--account">
-                        {% if user.is_superuser %}
-                            <a class="topbar__link topbar__link--accent" href="{% url 'admin:index' %}">Admin</a>
-                        {% endif %}
-                        <a class="topbar__link topbar__link--danger" href="{% url 'logout' %}">Salir</a>
-                    </div>
+                    <a class="topbar__link" href="{% url 'dashboard' %}">Dashboard</a>
+                    <a class="topbar__link" href="{% url 'listar' 'tipos' %}">Tipos</a>
+                    <a class="topbar__link" href="{% url 'listar' 'habitaciones' %}">Habitaciones</a>
+                    {% if user.is_superuser %}
+                        <a class="topbar__link" href="{% url 'listar' 'clientes' %}">Clientes</a>
+                    {% endif %}
+                    <a class="topbar__link" href="{% url 'listar' 'reservas' %}">Reservas</a>
+                    <a class="topbar__link" href="{% url 'listar' 'servicios' %}">Servicios</a>
+                    {% if user.is_superuser %}
+                        <a class="topbar__link topbar__link--accent" href="{% url 'admin:index' %}">Admin</a>
+                    {% endif %}
+                    <a class="topbar__link topbar__link--danger" href="{% url 'logout' %}">Salir</a>
                 {% else %}
-                    <div class="topbar__nav-group topbar__nav-group--account">
-                        <a class="topbar__link" href="{% url 'login' %}">Ingresar</a>
-                        <a class="topbar__link topbar__link--accent" href="{% url 'register' %}">Registro</a>
-                    </div>
+                    <a class="topbar__link" href="{% url 'login' %}">Ingresar</a>
+                    <a class="topbar__link topbar__link--accent" href="{% url 'register' %}">Registro</a>
                 {% endif %}
             </nav>
 
             {% if user.is_authenticated %}
                 <div class="topbar__user">
                     <span>{{ user.username }}</span>
-                    {% if user.is_superuser %}
-                        <small>Administrador</small>
-                    {% else %}
-                        <small>Usuario activo</small>
-                    {% endif %}
+                    <small>{% if user.is_superuser %}Administrador{% else %}Usuario activo{% endif %}</small>
                 </div>
             {% endif %}
         </div>
@@ -73,9 +61,7 @@
                 <a href="{% url 'inicio' %}">Hotel H.H.</a>
                 <a href="{% url 'inicio' %}">Gestion hotelera</a>
                 <a href="{% url 'listar' 'servicios' %}">Servicios</a>
-                {% if user.is_superuser %}
-                    <a href="{% url 'listar' 'clientes' %}">Clientes</a>
-                {% endif %}
+                {% if user.is_superuser %}<a href="{% url 'listar' 'clientes' %}">Clientes</a>{% endif %}
             </section>
             <section class="site-footer__column">
                 <h2>Ayuda</h2>
@@ -99,140 +85,75 @@
             </section>
             <section class="site-footer__column">
                 <h2>Siguenos</h2>
-                <div class="site-footer__socials" aria-label="Redes sociales">
-                    <a href="#" aria-label="Facebook">f</a>
-                    <a href="#" aria-label="Instagram">ig</a>
-                    <a href="#" aria-label="X">x</a>
-                    <a href="#" aria-label="LinkedIn">in</a>
+                <div class="site-footer__socials">
+                    <a href="#">f</a><a href="#">ig</a><a href="#">x</a><a href="#">in</a>
                 </div>
             </section>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    {% if messages %}
-        <script>
-            document.addEventListener('DOMContentLoaded', async () => {
-                const flashMessages = [
-                    {% for message in messages %}
-                        {
-                            tags: '{{ message.tags|default:"info"|escapejs }}',
-                            text: '{{ message|escapejs }}'
-                        }{% if not forloop.last %},{% endif %}
-                    {% endfor %}
-                ];
-
-                for (const flashMessage of flashMessages) {
-                    const icon = ['success', 'error', 'warning', 'info', 'question'].find((candidate) => {
-                        return flashMessage.tags.includes(candidate);
-                    }) || 'info';
-
-                    await Swal.fire({
-                        icon,
-                        title: flashMessage.text,
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#243b78',
-                        background: '#ffffff',
-                        color: '#1f2030',
-                        width: 'min(92vw, 560px)',
-                        padding: '2rem 1.5rem',
-                        showCloseButton: true,
-                        buttonsStyling: true,
-                        customClass: {
-                            popup: 'swal2-modern-popup',
-                            title: 'swal2-modern-title',
-                            confirmButton: 'swal2-modern-confirm'
-                        }
-                    });
-                }
-            });
-        </script>
-    {% endif %}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // === Menú hamburguesa ===
+            // Menú hamburguesa
             const toggle = document.querySelector('.topbar__toggle');
             const menu = document.getElementById('topbar-menu');
-
             if (toggle && menu) {
                 toggle.addEventListener('click', () => {
-                    const isOpen = menu.classList.toggle('is-open');
-                    toggle.classList.toggle('is-active', isOpen);
-                    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                    toggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+                    const open = menu.classList.toggle('is-open');
+                    toggle.classList.toggle('is-active', open);
+                    toggle.setAttribute('aria-expanded', open);
                 });
-
-                // Cierra el menú al hacer click en un enlace (útil en móvil)
-                menu.querySelectorAll('a').forEach((link) => {
-                    link.addEventListener('click', () => {
-                        if (window.innerWidth <= 980) {
-                            menu.classList.remove('is-open');
-                            toggle.classList.remove('is-active');
-                            toggle.setAttribute('aria-expanded', 'false');
-                            toggle.setAttribute('aria-label', 'Abrir menú');
-                        }
-                    });
-                });
+                menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+                    if (window.innerWidth <= 980) {
+                        menu.classList.remove('is-open');
+                        toggle.classList.remove('is-active');
+                    }
+                }));
             }
 
-            // === Confirmación de eliminación ===
+            // Confirmación de eliminación
             const getCookie = (name) => {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) {
-                    return parts.pop().split(';').shift();
-                }
-                return '';
+                const v = `; ${document.cookie}`;
+                const p = v.split(`; ${name}=`);
+                return p.length === 2 ? p.pop().split(';').shift() : '';
             };
-
             const csrfToken = getCookie('csrftoken');
-            const deleteButtons = document.querySelectorAll('[data-confirm-delete]');
-
-            deleteButtons.forEach((button) => {
-                button.addEventListener('click', async (event) => {
-                    event.preventDefault();
-
-                    const title = button.dataset.confirmTitle || 'Eliminar registro';
-                    const text = button.dataset.confirmText || 'Esta accion no se puede deshacer.';
-                    const result = await Swal.fire({
+            document.querySelectorAll('[data-confirm-delete]').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const r = await Swal.fire({
                         icon: 'warning',
-                        title,
-                        text,
+                        title: btn.dataset.confirmTitle || 'Eliminar registro',
+                        text: btn.dataset.confirmText || 'Esta accion no se puede deshacer.',
                         showCancelButton: true,
                         confirmButtonText: 'Si, eliminar',
                         cancelButtonText: 'Cancelar',
                         confirmButtonColor: '#c0392b',
                         cancelButtonColor: '#243b78',
-                        reverseButtons: true,
-                        width: 'min(92vw, 560px)',
-                        background: '#ffffff',
-                        color: '#1f2030',
-                        showCloseButton: true,
-                        customClass: {
-                            popup: 'swal2-modern-popup',
-                            title: 'swal2-modern-title',
-                            confirmButton: 'swal2-modern-confirm'
-                        }
+                        reverseButtons: true
                     });
-
-                    if (!result.isConfirmed) {
-                        return;
-                    }
-
-                    const form = document.createElement('form');
-                    form.method = 'post';
-                    form.action = button.href;
-
-                    const csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = 'csrfmiddlewaretoken';
-                    csrfInput.value = csrfToken;
-
-                    form.appendChild(csrfInput);
-                    document.body.appendChild(form);
-                    form.submit();
+                    if (!r.isConfirmed) return;
+                    const f = document.createElement('form');
+                    f.method = 'post'; f.action = btn.href;
+                    const i = document.createElement('input');
+                    i.type = 'hidden'; i.name = 'csrfmiddlewaretoken'; i.value = csrfToken;
+                    f.appendChild(i); document.body.appendChild(f); f.submit();
                 });
             });
+
+            // Mensajes flash
+            {% if messages %}
+                const flashes = [
+                    {% for m in messages %}{tags:'{{ m.tags|escapejs }}',text:'{{ m|escapejs }}'},{% endfor %}
+                ];
+                (async () => {
+                    for (const f of flashes) {
+                        const icon = ['success','error','warning','info'].find(c => f.tags.includes(c)) || 'info';
+                        await Swal.fire({ icon, title: f.text, confirmButtonText: 'OK', confirmButtonColor: '#243b78' });
+                    }
+                })();
+            {% endif %}
         });
     </script>
 </body>
