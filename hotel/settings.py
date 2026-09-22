@@ -15,7 +15,8 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-# añadimos las carpetas como variables para su uso
+
+# Carpetas usadas por el proyecto
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
@@ -46,8 +47,6 @@ INSTALLED_APPS = [
     'TipoHabitacion',
     'whitenoise',
 ]
-
-DEFAULT_AUTO_FIELD = "django_mongodb_backend.fields.ObjectIdAutoField"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,15 +133,19 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# agregamos la carpeta de static
 STATICFILES_DIRS = [STATIC_DIR]
 
 
+# Media files (Fotos subidas por el usuario)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
 
+
+# Autenticación
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'inicio'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ObjectId por defecto (MongoDB)
+DEFAULT_AUTO_FIELD = 'django_mongodb_backend.fields.ObjectIdAutoField'
