@@ -38,18 +38,18 @@
             {% for obj in page_obj %}
             <tr>
                 {% if modelo == 'tipos' %}
-                    <td>{{ obj.nombre }}</td><td>{{ obj.descripcion|truncatechars:60 }}</td><td>${{ obj.precio_noche }}</td><td>{{ obj.capacidad }}</td>
-                    <td>{% if obj.foto %}<img class="thumb" src="{{ obj.foto.url }}" alt="{{ obj.nombre }}">{% else %}Sin foto{% endif %}</td>
+                    <td data-label="Nombre">{{ obj.nombre }}</td><td data-label="Descripcion">{{ obj.descripcion|truncatechars:60 }}</td><td data-label="Precio noche">${{ obj.precio_noche }}</td><td data-label="Capacidad">{{ obj.capacidad }}</td>
+                    <td data-label="Foto">{% if obj.foto %}<img class="thumb" src="{{ obj.foto.url }}" alt="{{ obj.nombre }}">{% else %}Sin foto{% endif %}</td>
                 {% elif modelo == 'habitaciones' %}
-                    <td>{{ obj.numero }}</td><td>{{ obj.piso }}</td><td>{{ obj.estado }}</td><td>{{ obj.tipo }}</td>
+                    <td data-label="Numero">{{ obj.numero }}</td><td data-label="Piso">{{ obj.piso }}</td><td data-label="Estado">{{ obj.estado }}</td><td data-label="Tipo">{{ obj.tipo }}</td>
                 {% elif modelo == 'clientes' %}
-                    <td>{{ obj.nombre }}</td><td>{{ obj.rut }}</td><td>{{ obj.email }}</td><td>{{ obj.telefono }}</td>
+                    <td data-label="Nombre">{{ obj.nombre }}</td><td data-label="RUT">{{ obj.rut }}</td><td data-label="Email">{{ obj.email }}</td><td data-label="Telefono">{{ obj.telefono }}</td>
                 {% elif modelo == 'reservas' %}
-                    <td>{{ obj.cliente }}</td><td>{{ obj.habitacion }}</td><td>{{ obj.check_in }}</td><td>{{ obj.check_out }}</td><td>{{ obj.estado }}</td><td>${{ obj.total }}</td>
+                    <td data-label="Cliente">{{ obj.cliente }}</td><td data-label="Habitacion">{{ obj.habitacion }}</td><td data-label="Check in">{{ obj.check_in }}</td><td data-label="Check out">{{ obj.check_out }}</td><td data-label="Estado">{{ obj.estado }}</td><td data-label="Total">${{ obj.total }}</td>
                 {% elif modelo == 'servicios' %}
-                    <td>{{ obj.nombre }}</td><td>${{ obj.precio }}</td><td>{{ obj.descripcion|truncatechars:60 }}</td><td>{{ obj.reservas.count }}</td>
+                    <td data-label="Nombre">{{ obj.nombre }}</td><td data-label="Precio">${{ obj.precio }}</td><td data-label="Descripcion">{{ obj.descripcion|truncatechars:60 }}</td><td data-label="Reservas">{{ obj.reservas.count }}</td>
                 {% endif %}
-                <td class="row-actions">
+                <td class="row-actions" data-label="Acciones">
                     <a class="btn btn--sm secondary" href="{% url 'detalle' modelo obj.id %}">Ver</a>
                     {% if can_change %}
                         <a class="btn btn--sm" href="{% url 'editar' modelo obj.id %}">Editar</a>

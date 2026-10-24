@@ -22,16 +22,46 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 
+# ==========================================================
+# Variables de entorno (.env)
+# Carga el archivo .env si existe (no debe subirse a Git).
+# En producción (Render) las variables se configuran en el
+# dashboard del servicio.
+# ==========================================================
+
+def _load_env_file(path):
+    if not path.exists():
+        return
+    for raw_line in path.read_text(encoding='utf-8').splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        key, _, value = line.partition('=')
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        os.environ.setdefault(key, value)
+
+
+_load_env_file(BASE_DIR / '.env')
+
+
+def _env_flag(name, default='0'):
+    return os.environ.get(name, default).strip().lower() in ('1', 'true', 'yes', 'on')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6*gdi4oy=3)t7059va@c8xskrpzu+p&g^&g9=n0-@5$9&u@1$2'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _env_flag('DJANGO_DEBUG')
 
-ALLOWED_HOSTS = ['hotel-mong.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+    if host.strip()
+]
 
 
 # Application definition
@@ -85,8 +115,8 @@ WSGI_APPLICATION = 'hotel.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django_mongodb_backend",
-        "HOST": "mongodb+srv://hectorhueman_db_user:zmyDhJCMBX4m2jvp@hotel.an4661a.mongodb.net/?appName=hotel",
-        "NAME": "hotel",
+        "HOST": os.environ.get("MONGODB_URI"),
+        "NAME": os.environ.get("MONGODB_NAME", "hotel"),
     }
 }
 

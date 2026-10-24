@@ -1342,3 +1342,111 @@ img { max-width: 100%; display: block; }
         height: 42px;
     }
 }
+
+/* ==========================================================
+   TABLAS EN MÓVIL
+   Cada fila se convierte en una tarjeta: el encabezado se oculta
+   y cada celda muestra su etiqueta (data-label) a la izquierda
+   y el valor a la derecha, en una sola línea.
+   ========================================================== */
+@media (max-width: 640px) {
+    .table-wrap {
+        overflow-x: hidden;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tr,
+    .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table {
+        border-collapse: separate;
+        background: transparent;
+        box-shadow: none;
+        overflow: visible;
+    }
+
+    .table tbody {
+        display: grid;
+        gap: 10px;
+    }
+
+    .table tr {
+        background: var(--surface);
+        border: 1px solid rgba(217, 226, 236, 0.95);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        min-width: 0;
+        padding: 9px 14px;
+        border-bottom: none;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .table td + td {
+        border-top: 1px dashed var(--border);
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+        text-align: left;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    /* Celdas sin etiqueta (mensajes "Sin datos...") quedan a la izquierda */
+    .table td:not([data-label]) {
+        justify-content: flex-start;
+        text-align: left;
+        color: var(--muted);
+    }
+
+    .table td:not([data-label])::before {
+        content: none;
+    }
+
+    /* Acciones de la lista: botones apilados a ancho completo */
+    .table td.row-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 12px 14px;
+    }
+
+    .table td.row-actions::before {
+        content: none;
+    }
+
+    .table td.row-actions > .btn {
+        width: 100%;
+    }
+
+    .table td.row-actions > .btn.danger {
+        grid-column: 1 / -1;
+    }
+
+    /* Foto miniatura en la fila tajeta */
+    .table td .thumb {
+        width: 72px;
+        height: 52px;
+        margin-left: auto;
+    }
+}

@@ -1,0 +1,14 @@
+# Secretos y configuracion local
+.env
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+
+# Archivos generados por Django
+staticfiles/
+
+# Logs y temporales
+*.log
+Thumbs.db
+.DS_Store
