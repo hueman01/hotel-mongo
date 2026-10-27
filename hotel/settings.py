@@ -174,6 +174,10 @@ STORAGES = {
     },
 }
 
+# Tolerante a archivos faltantes: si un archivo no esta en el manifest,
+# usa la URL sin hash (404 en el css) en lugar de un 500 en la pagina.
+WHITENOISE_MANIFEST_STRICT = False
+
 
 # Media files (Fotos subidas por el usuario)
 MEDIA_URL = '/media/'
