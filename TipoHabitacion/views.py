@@ -295,6 +295,17 @@ def register_view(request):
             user = form.save()
             cliente_group, _ = Group.objects.get_or_create(name='Clientes')
             user.groups.add(cliente_group)
+
+            nombre_completo = f'{user.first_name} {user.last_name}'.strip() or user.username
+            cliente = Cliente.objects.filter(email__iexact=user.email).first()
+            if cliente is None:
+                cliente = Cliente.objects.create(
+                    nombre=nombre_completo,
+                    rut=form.cleaned_data['rut'],
+                    email=user.email.strip().lower(),
+                    telefono=form.cleaned_data['telefono'],
+                )
+
             messages.success(request, 'Usuario registrado correctamente. Ya puedes iniciar sesion.')
             return redirect('login')
         messages.error(request, 'Corrige los campos marcados en el formulario.')
@@ -308,6 +319,44 @@ def logout_view(request):
     auth_logout(request)
     messages.info(request, 'Sesion cerrada correctamente.')
     return redirect('login')
+
+
+def _usuarios_pueden_gestionar_clientes(user):
+    return user.is_superuser or user.has_perm(_permission_name(Cliente, 'view'))
+
+
+@login_required
+@never_cache
+def clientes_panel(request):
+    """Panel de clientes: admin (y usuarios con permiso) ven todos los clientes,
+    el resto ve solamente sus propios datos y reservas."""
+    if _usuarios_pueden_gestionar_clientes(request.user):
+        total_clientes = Cliente.objects.count()
+        ultimos_clientes = Cliente.objects.order_by('-id')[:10]
+
+        return render(request, 'hotel/clientes_panel.html', {
+            'puede_gestionar': True,
+            'total_clientes': total_clientes,
+            'ultimos_clientes': ultimos_clientes,
+        })
+
+    cliente = Cliente.objects.filter(email__iexact=request.user.email).first()
+    mis_reservas = []
+    mis_totales = None
+    if cliente:
+        mis_reservas = (
+            cliente.reservas
+            .select_related('habitacion')
+            .order_by('-id')[:8]
+        )
+        mis_totales = cliente.reservas.count()
+
+    return render(request, 'hotel/clientes_panel.html', {
+        'puede_gestionar': False,
+        'cliente': cliente,
+        'mis_reservas': mis_reservas,
+        'mis_totales': mis_totales,
+    })
 
 
 @login_required

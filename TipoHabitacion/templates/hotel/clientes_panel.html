@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Clientes | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="page-header">
+    <div>
+        <p class="eyebrow">Clientes</p>
+        <h2>{% if puede_gestionar %}Panel de clientes{% else %}Mis datos{% endif %}</h2>
+        <p>
+            {% if puede_gestionar %}
+                {{ total_clientes }} {% if total_clientes == 1 %}cliente registrado{% else %}clientes registrados{% endif %} en el sistema.
+            {% else %}
+                Informacion personal y reservas asociadas a tu cuenta.
+            {% endif %}
+        </p>
+    </div>
+    <div class="actions">
+        {% if puede_gestionar %}
+            <a class="btn" href="{% url 'listar' 'clientes' %}">Ver todos y gestionar</a>
+        {% endif %}
+    </div>
+</section>
+
+{% if puede_gestionar %}
+
+    <section class="metric-grid">
+        <article class="metric-card">
+            <span>Clientes registrados</span>
+            <strong>{{ total_clientes }}</strong>
+        </article>
+        <article class="metric-card">
+            <span>Ultimos registros</span>
+            <strong>{{ ultimos_clientes|length }}</strong>
+        </article>
+    </section>
+
+    <section class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>RUT</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in ultimos_clientes %}
+                    <tr>
+                        <td data-label="Nombre">{{ cliente.nombre }}</td>
+                        <td data-label="RUT">{{ cliente.rut }}</td>
+                        <td data-label="Email">{{ cliente.email }}</td>
+                        <td data-label="Telefono">{{ cliente.telefono }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Todavia no hay clientes registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+{% else %}
+
+    {% if cliente %}
+        <section class="card">
+            <h3>Mis datos</h3>
+            <dl class="detail-list">
+                <dt>Nombre</dt>
+                <dd>{{ cliente.nombre }}</dd>
+                <dt>RUT</dt>
+                <dd>{{ cliente.rut }}</dd>
+                <dt>Email</dt>
+                <dd>{{ cliente.email }}</dd>
+                <dt>Telefono</dt>
+                <dd>{{ cliente.telefono }}</dd>
+            </dl>
+        </section>
+
+        <section class="card">
+            <h3>Mis reservas {% if mis_totales %}({{ mis_totales }} en total){% endif %}</h3>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Habitacion</th>
+                            <th>Check in</th>
+                            <th>Check out</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reserva in mis_reservas %}
+                            <tr>
+                                <td data-label="Habitacion">{{ reserva.habitacion }}</td>
+                                <td data-label="Check in">{{ reserva.check_in }}</td>
+                                <td data-label="Check out">{{ reserva.check_out }}</td>
+                                <td data-label="Estado">{{ reserva.estado }}</td>
+                                <td data-label="Total">${{ reserva.total }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5">No tienes reservas registradas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% else %}
+        <section class="card">
+            <p class="empty-state">
+                Tu cuenta todavia no tiene datos de cliente asociados.
+                Tu correo de registro es: <strong>{{ user.email|default:user.username }}</strong>.
+                Solicita al administrador vincularte como cliente para ver tus reservas.
+            </p>
+        </section>
+    {% endif %}
+
+{% endif %}
+{% endblock %}

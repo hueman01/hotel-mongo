@@ -268,6 +268,8 @@ class ServicioForm(forms.ModelForm):
 
 
 class RegistroForm(UserCreationForm):
+    rut = forms.CharField(label='RUT', max_length=12)
+    telefono = forms.CharField(label='Telefono', max_length=20)
     email = forms.EmailField(label='Correo electronico')
     first_name = forms.CharField(label='Nombre', max_length=150, required=False)
     last_name = forms.CharField(label='Apellido', max_length=150, required=False)
@@ -308,6 +310,8 @@ class RegistroForm(UserCreationForm):
             'first_name': 'Andres',
             'last_name': 'Hueman',
             'email': 'usuario@correo.cl',
+            'rut': '20850578-6',
+            'telefono': '+56935547698',
             'password1': 'ClaveSegura2026!',
             'password2': 'ClaveSegura2026!',
         })
@@ -317,6 +321,22 @@ class RegistroForm(UserCreationForm):
         if User.objects.filter(email__iexact=email).exists():
             raise ValidationError('Ya existe un usuario con ese correo.')
         return email
+
+    def clean_rut(self):
+        rut = validar_rut_chileno(self.cleaned_data['rut'])
+        return _validar_unico(
+            Cliente,
+            'rut',
+            rut,
+            None,
+            'Ya existe un cliente con ese RUT.',
+        )
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data['telefono']
+        if len(telefono.strip()) < 8:
+            raise ValidationError('El telefono debe contener al menos 8 caracteres.')
+        return telefono.strip()
 
 
 class TipoHabitacionFilterForm(forms.Form):
