@@ -54,7 +54,7 @@ def validar_rut_chileno(rut):
 
 def _validar_unico(modelo, campo, valor, instancia, mensaje):
     queryset = modelo.objects.filter(**{f'{campo}__iexact': valor})
-    if instancia.pk:
+    if instancia is not None and instancia.pk:
         queryset = queryset.exclude(pk=instancia.pk)
     if queryset.exists():
         raise ValidationError(mensaje)
