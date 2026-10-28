@@ -1,0 +1,11 @@
+Bienvenido a Hotel H.H., {{ nombre }}!
+
+Tu cuenta "{{ username }}" fue creada correctamente.
+{% if cliente %}
+Ahora puedes ver y editar tus datos desde la seccion "Mis datos" del sistema.
+{% endif %}
+
+Gracias por registrarte.
+Hotel H.H. - Gestion hotelera
+
+(Este es un correo automatico, no respondas a este mensaje.)

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="margin:0;padding:24px;background:#f3efe9;font-family:Arial,Helvetica,sans-serif;color:#1f2030;">
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:14px;padding:28px;border:1px solid #ddd5e0;">
+        <h2 style="margin:0 0 16px;color:#243b78;">Bienvenido a Hotel H.H.</h2>
+        <p style="margin:0 0 14px;line-height:1.6;">Hola <strong>{{ nombre }}</strong>,</p>
+        <p style="margin:0 0 14px;line-height:1.6;">
+            Tu cuenta <strong>{{ username }}</strong> fue creada correctamente.
+        </p>
+        {% if cliente %}
+            <p style="margin:0 0 14px;line-height:1.6;">
+                Desde la seccion <strong>"Mis datos"</strong> puedes ver y editar tu informacion,
+                y consultar tus reservas.
+            </p>
+        {% endif %}
+        <p style="margin:0 0 14px;line-height:1.6;">Gracias por registrarte.</p>
+        <p style="margin:0;color:#6d6474;font-size:0.85rem;">
+            Hotel H.H. - Gestion hotelera<br>
+            (Este es un correo automatico, no respondas a este mensaje.)
+        </p>
+    </div>
+</body>
+</html>

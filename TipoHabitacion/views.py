@@ -30,6 +30,7 @@ from .forms import (
     TipoHabitacionFilterForm,
     TipoHabitacionForm,
 )
+from .emails import enviar_bienvenida, enviar_confirmacion_reserva
 from .models import Cliente, Habitacion, Reserva, Servicio, TipoHabitacion
 
 
@@ -308,6 +309,7 @@ def register_view(request):
                 )
 
             messages.success(request, 'Usuario registrado correctamente. Ya puedes iniciar sesion.')
+            enviar_bienvenida(user, cliente)
             return redirect('login')
         messages.error(request, 'Corrige los campos marcados en el formulario.')
 
@@ -590,7 +592,9 @@ def crear(request, modelo):
 
     form = config['form'](request.POST or None, request.FILES or None)
     if request.method == 'POST' and form.is_valid():
-        form.save()
+        objeto = form.save()
+        if modelo == 'reservas':
+            enviar_confirmacion_reserva(objeto)
         messages.success(request, f'El {config["singular"]} se creo correctamente.')
         return redirect('listar', modelo=modelo)
     if request.method == 'POST':

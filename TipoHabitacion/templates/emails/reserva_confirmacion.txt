@@ -1,0 +1,16 @@
+Reserva registrada - Hotel H.H.
+
+Hola {{ cliente.nombre }}! Tu reserva fue registrada con el detalle:
+
+Habitacion: {{ habitacion.numero }} (piso {{ habitacion.piso }})
+Tipo: {{ tipo.nombre }} - ${{ tipo.precio_noche }} por noche
+Desde: {{ reserva.check_in }}
+Hasta: {{ reserva.check_out }}
+Noches: {{ noches }}
+Estado: {{ reserva.estado }}
+Total: ${{ total }}
+
+Puedes consultar el estado de tus reservas en la seccion "Mis datos".
+
+Hotel H.H. - Gestion hotelera
+(Este es un correo automatico, no respondas a este mensaje.)
