@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Editar mis datos | Sistema Hotel{% endblock %}
+{% block content %}
+<section class="card">
+    <p class="eyebrow">Mis datos</p>
+    <h2>Editar mi informacion</h2>
+    <p class="form-note">
+        El correo electronico corresponde a tu cuenta y no se puede editar aca.
+        Cambia el resto de tu informacion y guarda los cambios.
+    </p>
+    {% if form.errors %}
+        <div class="form-errors" role="alert" aria-live="polite">
+            <strong>Revisa estos errores:</strong>
+            <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <form method="post" class="form form--stacked">
+        {% csrf_token %}
+        <div class="field">
+            <label for="id_email">Correo electronico (cuenta)</label>
+            <input type="email" value="{{ user.email|lower }}" id="id_email" disabled>
+        </div>
+        {{ form.as_p }}
+        <div class="actions">
+            <button class="btn" type="submit">Guardar cambios</button>
+            <a class="btn secondary" href="{% url 'clientes_panel' %}">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}

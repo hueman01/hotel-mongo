@@ -61,8 +61,15 @@
 {% else %}
 
     {% if cliente %}
+        <section class="card page-header">
+            <div>
+                <h3>Mis datos</h3>
+            </div>
+            <div class="actions">
+                <a class="btn btn--sm" href="{% url 'mi_perfil' %}">Editar</a>
+            </div>
+        </section>
         <section class="card">
-            <h3>Mis datos</h3>
             <dl class="detail-list">
                 <dt>Nombre</dt>
                 <dd>{{ cliente.nombre }}</dd>

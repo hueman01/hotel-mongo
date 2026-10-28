@@ -25,13 +25,21 @@
                 {% if user.is_authenticated %}
                     <a class="topbar__link" href="{% url 'dashboard' %}">Dashboard</a>
                     <a class="topbar__link" href="{% url 'clientes_panel' %}">{% if user.is_superuser %}Panel clientes{% else %}Mis datos{% endif %}</a>
-                    <a class="topbar__link" href="{% url 'listar' 'tipos' %}">Tipos</a>
-                    <a class="topbar__link" href="{% url 'listar' 'habitaciones' %}">Habitaciones</a>
+                    {% if perms.TipoHabitacion.view_tipohabitacion %}
+                        <a class="topbar__link" href="{% url 'listar' 'tipos' %}">Tipos</a>
+                    {% endif %}
+                    {% if perms.TipoHabitacion.view_habitacion %}
+                        <a class="topbar__link" href="{% url 'listar' 'habitaciones' %}">Habitaciones</a>
+                    {% endif %}
                     {% if user.is_superuser %}
                         <a class="topbar__link" href="{% url 'listar' 'clientes' %}">Clientes</a>
                     {% endif %}
-                    <a class="topbar__link" href="{% url 'listar' 'reservas' %}">Reservas</a>
-                    <a class="topbar__link" href="{% url 'listar' 'servicios' %}">Servicios</a>
+                    {% if perms.TipoHabitacion.view_reserva %}
+                        <a class="topbar__link" href="{% url 'listar' 'reservas' %}">Reservas</a>
+                    {% endif %}
+                    {% if perms.TipoHabitacion.view_servicio %}
+                        <a class="topbar__link" href="{% url 'listar' 'servicios' %}">Servicios</a>
+                    {% endif %}
                     {% if user.is_superuser %}
                         <a class="topbar__link topbar__link--accent" href="{% url 'admin:index' %}">Admin</a>
                     {% endif %}

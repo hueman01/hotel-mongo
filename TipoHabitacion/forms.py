@@ -183,6 +183,51 @@ class ClienteForm(forms.ModelForm):
         return telefono.strip()
 
 
+class ClientePerfilForm(forms.ModelForm):
+    """Edicion de datos propios por parte del usuario registrado.
+    El email no se edita aca porque es la llave que vincula la cuenta
+    del usuario con su ficha de cliente."""
+
+    class Meta:
+        model = Cliente
+        fields = ('nombre', 'rut', 'telefono')
+        labels = {
+            'nombre': 'Nombre completo',
+            'rut': 'RUT',
+            'telefono': 'Telefono',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _aplicar_ejemplos(self, {
+            'nombre': 'Andres Hueman Ovalle',
+            'rut': '20850578-6',
+            'telefono': '+56935547698',
+        })
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data['nombre'].strip()
+        if not nombre:
+            raise ValidationError('El nombre no puede estar vacio.')
+        return nombre
+
+    def clean_rut(self):
+        rut = validar_rut_chileno(self.cleaned_data['rut'])
+        return _validar_unico(
+            Cliente,
+            'rut',
+            rut,
+            self.instance,
+            'Ya existe un cliente con ese RUT.',
+        )
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data['telefono']
+        if len(telefono.strip()) < 8:
+            raise ValidationError('El telefono debe contener al menos 8 caracteres.')
+        return telefono.strip()
+
+
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva

@@ -18,6 +18,7 @@ from matplotlib import pyplot as plt
 from .forms import (
     ClienteFilterForm,
     ClienteForm,
+    ClientePerfilForm,
     LoginForm,
     HabitacionFilterForm,
     HabitacionForm,
@@ -322,7 +323,9 @@ def logout_view(request):
 
 
 def _usuarios_pueden_gestionar_clientes(user):
-    return user.is_superuser or user.has_perm(_permission_name(Cliente, 'view'))
+    """Solo el admin ve todos los clientes; los usuarios normales
+    ven y editan unicamente sus propios datos."""
+    return user.is_superuser
 
 
 @login_required
@@ -357,6 +360,32 @@ def clientes_panel(request):
         'mis_reservas': mis_reservas,
         'mis_totales': mis_totales,
     })
+
+
+@login_required
+@never_cache
+def mi_perfil(request):
+    """El usuario registrado edita sus propios datos de cliente."""
+    if _usuarios_pueden_gestionar_clientes(request.user):
+        return redirect('listar', modelo='clientes')
+
+    cliente = Cliente.objects.filter(email__iexact=request.user.email).first()
+    if cliente is None:
+        messages.info(
+            request,
+            'Tu cuenta todavia no tiene ficha de cliente asociada. Solicitala al administrador.',
+        )
+        return redirect('clientes_panel')
+
+    form = ClientePerfilForm(request.POST or None, instance=cliente)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Tus datos se actualizaron correctamente.')
+        return redirect('clientes_panel')
+    if request.method == 'POST':
+        messages.error(request, 'Revisa los campos marcados en el formulario.')
+
+    return render(request, 'hotel/mi_perfil_form.html', {'form': form})
 
 
 @login_required
